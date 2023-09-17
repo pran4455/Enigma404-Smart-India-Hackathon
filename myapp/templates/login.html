@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #7cdb34, #ab3ce7);
+    }
+
+    .container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 0 10px linear-gradient(135deg, #71db34, #cd3ce7);
+        text-align: center;
+    }
+
+    h2 {
+        color: #3498db;
+        margin-bottom: 20px;
+    }
+
+    .username,
+    .password {
+        width: 270px;
+        margin: 10px auto;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .button {
+        background: linear-gradient(135deg, #45db34, #a83ce7);
+        color: #ffffff;
+        border: none;
+        padding: 10px 30px;
+        font-size: 18px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .button:hover {
+        background: linear-gradient(135deg, #7cdb34, #783ce7);
+    }
+
+    p {
+        margin-top: 20px;
+        font-size: 14px;
+    }
+
+    a {
+        text-decoration: none;
+    }
+    span {
+        color: #e74c3c;
+    }
+</style>
+<body>
+    <div class="container">
+        <h2><span>ENIGMA</span>404</h2>
+        <form action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
+            <input class="username" id="username" type="text" placeholder="Email" name="email" required>
+            <br>
+            <input class="password" id="password" type="password" placeholder="Password" name="password" required>
+            <br>
+            <input class="button" type="submit" value="Login">
+            {% if alertmessage %}
+            <script>
+                alert('{{alertmessage}}');
+            </script>
+            {% endif %}
+        </form>
+        <p>Create an account? <a href="{% url 'signup' %}">Click here</a></p>
+    </div>
+</body>
+</html>

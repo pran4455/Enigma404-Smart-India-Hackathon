@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign Up</title>
+</head>
+<style>
+    .fname,
+    .lname,
+    .mail,
+    .phoneno,
+    .password {
+        width: 270px;
+        margin: 10px auto;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #7cdb34, #ab3ce7);
+    }
+
+    .container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 0 10px linear-gradient(135deg, #7cdb34, #ab3ce7);
+        text-align: center;
+    }
+
+    h2 {
+        color: #e74c3c;
+        margin-bottom: 20px;
+    }
+
+
+    .button {
+        background: linear-gradient(135deg, #7cdb34, #ab3ce7);
+        color: #ffffff;
+        border: none;
+        padding: 10px 30px;
+        font-size: 18px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .button:hover {
+        background: linear-gradient(135deg, #7cdb34, #ab3ce7);
+    }
+
+    p {
+        margin-top: 20px;
+        font-size: 14px;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    span {
+        color: #3498db;
+    }
+</style>
+<body>
+    <div class="container">
+        <form method="POST" action="{% url 'signup' %}">
+            {% csrf_token %}
+            <h2>VISUAL<span>SCAPE</span></h2>
+            <input class="fname" type="text" name="first_name" placeholder="First name" required><br>
+            <input class="fname" type="text" name="last_name" placeholder="Last name" required><br>
+            <input class="mail" type="email" name="email" placeholder="Email" required><br>
+            <input class="phoneno" type="text" name="phone_number" placeholder="Phone Number" required><br>
+            <input class="password" type="password" name="password" placeholder="Password" required><br><br>
+            <button class="button" type="submit">Sign Up</button>
+        </form>
+        <p>Already have an account? <a href="{% url 'login' %}">Click here</a></p>
+    </div>
+</body>
+</html>
