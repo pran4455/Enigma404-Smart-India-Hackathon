@@ -28,7 +28,7 @@
     }
 
     h2 {
-        color: #3498db;
+        color: #000000;
         margin-bottom: 20px;
     }
 
@@ -70,7 +70,7 @@
 </style>
 <body>
     <div class="container">
-        <h2><span>ENIGMA</span>404</h2>
+        <h2>ENIGMA404</h2>
         <form action="{% url 'login' %}" method="POST">
             {% csrf_token %}
             <input class="username" id="username" type="text" placeholder="Email" name="email" required>
