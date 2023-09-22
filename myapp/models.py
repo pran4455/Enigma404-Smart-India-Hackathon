@@ -7,3 +7,9 @@ class User(models.Model):
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=15)
     password = models.CharField(max_length=128)
+
+
+class AudioRecording(models.Model):
+    title = models.CharField(max_length=255)
+    audio_file = models.FileField(upload_to='audio_recordings/')
+    created_at = models.DateTimeField(auto_now_add=True)

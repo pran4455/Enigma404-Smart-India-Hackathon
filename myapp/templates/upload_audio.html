@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audio Recorder</title>
+</head>
+<body>
+    <button id="recordButton">Record</button>
+    <button id="playButton">Play</button> <!-- Added Play Button -->
+    <audio id="audioPlayer" controls></audio>
+    
+    <script>
+        const recordButton = document.getElementById('recordButton');
+        const playButton = document.getElementById('playButton'); // Added Play Button
+        const audioPlayer = document.getElementById('audioPlayer');
+        let isRecording = false;
+        let mediaRecorder;
+        let audioChunks = [];
+
+        playButton.addEventListener('click', async () => {
+            try {
+                // Make an AJAX request to retrieve the audio data from the server
+                const response = await fetch('/enigma404/get_audio_data/');
+                if (response.ok) {
+                    // Set the audio source from the fetched audio data
+                    audioPlayer.src = URL.createObjectURL(await response.blob());
+                } else {
+                    console.error('Failed to retrieve audio data from the server.');
+                }
+            } catch (error) {
+                console.error('Error fetching audio data:', error);
+            }
+        });
+
+
+        recordButton.addEventListener('click', async () => {
+            if (!isRecording) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+
+                    mediaRecorder.ondataavailable = (event) => {
+                        if (event.data.size > 0) {
+                            audioChunks.push(event.data);
+                        }
+                    };
+
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        audioPlayer.src = URL.createObjectURL(audioBlob);
+                        sendAudioToServer(audioBlob);
+                        audioChunks = [];
+                    };
+
+                    mediaRecorder.start();
+                    recordButton.textContent = 'Stop Recording';
+                    isRecording = true;
+                } catch (error) {
+                    console.error('Error accessing microphone:', error);
+                }
+            } else {
+                mediaRecorder.stop();
+                recordButton.textContent = 'Record';
+                isRecording = false;
+            }
+        });
+        
+        async function sendAudioToServer(audioBlob) {
+            const formData = new FormData();
+            formData.append('audio_data', audioBlob, 'audio.wav'); // Updated field name and filename
+        
+            const headers = {
+                'Accept': 'application/json',
+            };
+        
+            try {
+                const response = await fetch('/enigma404/upload_audio/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: headers,
+                });
+        
+                if (response.ok) {
+                    console.log('Audio successfully uploaded to server.');
+                } else {
+                    console.error('Failed to upload audio to server.');
+                }
+            } catch (error) {
+                console.error('Error sending audio to server:', error);
+            }
+        }
+        
+    </script>
+</body>
+</html>

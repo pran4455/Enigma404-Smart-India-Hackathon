@@ -41,13 +41,13 @@
     }
 
     h2 {
-        color: #e74c3c;
+        color: #000000;
         margin-bottom: 20px;
     }
 
 
     .button {
-        background: linear-gradient(135deg, #7cdb34, #ab3ce7);
+        background: linear-gradient(135deg, #ff5050, #ff5050);
         color: #ffffff;
         border: none;
         padding: 10px 30px;
@@ -57,7 +57,7 @@
     }
 
     .button:hover {
-        background: linear-gradient(135deg, #7cdb34, #ab3ce7);
+        background: linear-gradient(135deg, #545dff, #545dff);
     }
 
     p {
@@ -77,7 +77,7 @@
     <div class="container">
         <form method="POST" action="{% url 'signup' %}">
             {% csrf_token %}
-            <h2>VISUAL<span>SCAPE</span></h2>
+            <h2>ENIGMA404</h2>
             <input class="fname" type="text" name="first_name" placeholder="First name" required><br>
             <input class="fname" type="text" name="last_name" placeholder="Last name" required><br>
             <input class="mail" type="email" name="email" placeholder="Email" required><br>

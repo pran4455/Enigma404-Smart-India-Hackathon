@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Record Audio</title>
+</head>
+<body>
+    <h1>Record Audio</h1>
+    
+    <button id="recordButton">Record</button>
+    <button id="stopButton">Stop</button>
+    
+    <script>
+        const recordButton = document.getElementById('recordButton');
+        const stopButton = document.getElementById('stopButton');
+        let isRecording = false;
+        let mediaRecorder;
+        let audioChunks = [];
+
+        recordButton.addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    sendAudioToServer(audioBlob);
+                    audioChunks = [];
+                };
+
+                mediaRecorder.start();
+                recordButton.textContent = 'Recording...';
+                isRecording = true;
+            } catch (error) {
+                console.error('Error accessing microphone:', error);
+            }
+        });
+
+        stopButton.addEventListener('click', () => {
+            if (isRecording) {
+                mediaRecorder.stop();
+                recordButton.textContent = 'Record';
+                isRecording = false;
+            }
+        });
+
+        async function sendAudioToServer(audioBlob) {
+            const formData = new FormData();
+            formData.append('audio_data', audioBlob);
+
+            try {
+                const response = await fetch('/enigma404/upload_audio/', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    console.log('Audio successfully uploaded to server.');
+                } else {
+                    console.error('Failed to upload audio to server.');
+                }
+            } catch (error) {
+                console.error('Error sending audio to server:', error);
+            }
+        }
+    </script>
+</body>
+</html>

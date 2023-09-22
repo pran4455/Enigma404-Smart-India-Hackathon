@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audio Player</title>
+</head>
+<body>
+    <h1>Audio Player</h1>
+
+    <!-- Audio player element -->
+    <audio id="audioPlayer" controls></audio>
+
+    <!-- Button to trigger audio playback -->
+    <button id="playButton">Play Audio</button>
+
+    <script>
+        // JavaScript code here
+        const audioDataUrl = '/enigma404/play_latest_audio/';
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playButton = document.getElementById('playButton');
+
+        playButton.addEventListener('click', () => {
+            // Fetch the audio data from the Django view
+            fetch(audioDataUrl)
+                .then(response => {
+                    if (response.status === 200) {
+                        return response.blob();
+                    } else {
+                        throw new Error('Failed to fetch audio data');
+                    }
+                })
+                .then(audioBlob => {
+                    // Create a URL for the Blob
+                    const audioUrl = URL.createObjectURL(audioBlob);
+
+                    // Set the audio source to the created URL
+                    audioPlayer.src = audioUrl;
+
+                    // Start playing the audio
+                    audioPlayer.play();
+                })
+                .catch(error => {
+                    console.error('Error fetching and playing audio data:', error);
+                });
+        });
+    </script>
+</body>
+</html>

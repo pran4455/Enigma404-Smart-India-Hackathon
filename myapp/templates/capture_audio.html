@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Capture Audio</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="button" id="start-record">Start Recording</button>
+    <button type="button" id="stop-record">Stop Recording</button>
+    <button type="submit">Save Audio</button>
+</form>
+
+<script>
+    // JavaScript for audio recording
+    let chunks = [];
+    let mediaRecorder;
+    let audioStream;
+
+    document.getElementById("start-record").addEventListener("click", () => {
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                audioStream = stream;
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.ondataavailable = event => {
+                    if (event.data.size > 0) {
+                        chunks.push(event.data);
+                    }
+                };
+                mediaRecorder.start();
+            })
+            .catch(error => {
+                console.error("Error accessing microphone:", error);
+            });
+    });
+
+    document.getElementById("stop-record").addEventListener("click", () => {
+        if (mediaRecorder && mediaRecorder.state === "recording") {
+            mediaRecorder.stop();
+            audioStream.getTracks().forEach(track => track.stop());
+        }
+    });
+
+    mediaRecorder.onstop = () => {
+        const blob = new Blob(chunks, { type: "audio/wav" });
+        const audioUrl = URL.createObjectURL(blob);
+        const audioBlob = new File([blob], "audio.wav", { type: "audio/wav" });
+        document.querySelector("#id_audio_file").files = [audioBlob];
+        chunks = [];
+    };
+</script>
+{% endblock %}
