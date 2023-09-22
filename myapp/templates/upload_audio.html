@@ -2,34 +2,43 @@
 <html>
 <head>
     <title>Audio Recorder</title>
+    <style>
+        body {
+            background-color: #f2f2f2; /* Set your desired background color */
+            text-align: center; /* Center align the content */
+        }
+
+        #audioPlayer {
+            width: 100%; /* Make the audio player fill the width of the container */
+            margin: 20px 0; /* Add some margin for spacing */
+        }
+
+        #recordButton {
+            padding: 10px 20px; /* Adjust padding to make buttons bigger */
+            font-size: 16px; /* Increase font size */
+            background-color: #007BFF; /* Set the button background color */
+            color: white; /* Set the text color to white */
+            border: none; /* Remove button border */
+            border-radius: 5px; /* Add border radius for rounded corners */
+            cursor: pointer; /* Add cursor pointer on hover */
+            margin: 10px; /* Add some margin between buttons */
+        }
+
+        #recordButton:hover {
+            background-color: #0056b3; /* Change button color on hover */
+        }
+    </style>
 </head>
 <body>
     <button id="recordButton">Record</button>
-    <button id="playButton">Play</button> <!-- Added Play Button -->
     <audio id="audioPlayer" controls></audio>
     
     <script>
         const recordButton = document.getElementById('recordButton');
-        const playButton = document.getElementById('playButton'); // Added Play Button
         const audioPlayer = document.getElementById('audioPlayer');
         let isRecording = false;
         let mediaRecorder;
         let audioChunks = [];
-
-        playButton.addEventListener('click', async () => {
-            try {
-                // Make an AJAX request to retrieve the audio data from the server
-                const response = await fetch('/enigma404/get_audio_data/');
-                if (response.ok) {
-                    // Set the audio source from the fetched audio data
-                    audioPlayer.src = URL.createObjectURL(await response.blob());
-                } else {
-                    console.error('Failed to retrieve audio data from the server.');
-                }
-            } catch (error) {
-                console.error('Error fetching audio data:', error);
-            }
-        });
 
 
         recordButton.addEventListener('click', async () => {

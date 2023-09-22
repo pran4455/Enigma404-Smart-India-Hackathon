@@ -7,14 +7,18 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseNotFound
 from django.http import HttpResponse
+from django.http import FileResponse
 import base64
-from django.http import JsonResponse
 import json
+import io
+import os
+import sys
 
 # Create your views here.
 
 def home(request):
     return render(request, "login.html")
+
 
 def signup(request):
 
@@ -37,6 +41,7 @@ def signup(request):
         return redirect('login')
     return render(request, 'signup.html')
 
+
 def login(request):
 
     if request.method == 'POST':
@@ -58,21 +63,10 @@ def login(request):
 
     return render(request, 'login.html')
 
+
 def dashboard(request):
 
     return render(request, 'upload_audio.html')
-
-# @csrf_exempt  # Disable CSRF protection for this view for simplicity; secure it in production.
-# def upload_audio(request):
-#     if request.method == 'POST':
-#         if 'audio_data' in request.FILES:
-#             audio_data = request.FILES['audio_data']
-#             audio_recording = AudioRecording(audio_data=audio_data)
-#             audio_recording.save()
-#             return JsonResponse({'status': 'success'})
-#         else:
-#             return JsonResponse({'status': 'failed', 'error': 'No audio file uploaded'})
-#     return JsonResponse({'status': 'failed', 'error': 'Invalid request method'})
 
 
 def play_audio(request, audio_id):
@@ -87,8 +81,6 @@ def play_audio(request, audio_id):
     except AudioRecording.DoesNotExist:
         return HttpResponseNotFound("Audio recording not found")
     
-from django.http import JsonResponse
-from .models import AudioRecording
 
 def get_latest_audio_id(request):
     try:
@@ -98,11 +90,6 @@ def get_latest_audio_id(request):
     except AudioRecording.DoesNotExist:
         return JsonResponse({'latest_audio_id': None})
     
-
-# views.py
-from django.http import JsonResponse, HttpResponse, HttpResponseNotFound
-from .models import AudioRecording
-
 
 @csrf_exempt
 def record_audio(request):
@@ -123,17 +110,6 @@ def record_audio(request):
 
     return JsonResponse({'status': 'failed', 'error': 'Invalid request method'})
 
-# def play_latest_audio(request):
-#     try:
-#         latest_audio_recording = AudioRecording.objects.latest('created_at')
-#         audio_data = latest_audio_recording.audio_data
-
-#         # Serve the audio data as a response with the appropriate content type
-#         response = HttpResponse(audio_data, content_type='audio/wav')
-#         response['Content-Disposition'] = 'inline; filename="audio.wav"'
-#         return response
-#     except AudioRecording.DoesNotExist:
-#         return HttpResponseNotFound("Audio recording not found")
 
 def get_latest_audio_id(request):
     try:
@@ -143,64 +119,7 @@ def get_latest_audio_id(request):
     except AudioRecording.DoesNotExist:
         return JsonResponse({'latest_audio_id': None})
 
-from django.http import JsonResponse
 
-
-
-
-# @csrf_exempt
-# def upload_audio(request):
-#     print("GHJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ")
-#     if request.method == 'POST':
-#         if 'audio_data' in request.FILES:
-#             audio_data = request.FILES['audio_data'].read()
-#             # Encode the audio data in Base64
-#             audio_data_base64 = base64.b64encode(audio_data).decode('utf-8')
-#             audio_data_dict = {'audio_data': audio_data_base64}
-
-#             json_file_path = '.audio_data.json'
-#             with open(json_file_path, 'w') as json_file:
-#                 json.dump(audio_data_dict, json_file)
-
-#             return JsonResponse({'status': 'success'})
-#         else:
-#             return JsonResponse({'status': 'failed', 'error': 'No audio file uploaded'})
-#     return JsonResponse({'status': 'failed', 'error': 'Invalid request method'})
-import os
-from django.http import HttpResponse
-
-
-# @csrf_exempt  # Disable CSRF protection for simplicity. You should use proper CSRF handling in production.
-# def upload_audio(request):
-#     if request.method == 'POST':
-#         try:
-#             print(1)
-#             # Get the uploaded audio data from the request
-#             audio_data = request.FILES.get('audio_data')
-#             print(2)
-
-#             # Define the file path to save the audio as "audio.wav" (you can adjust the path as needed)
-#             audio_file_path = os.path.join('D:\Projects\SmartIndiaHackathon\Enigma404\myapp\allaudio', 'audio.wav')
-#             print(3)
-
-
-#             # Save the audio data to the file
-#             print(audio_file_path)
-#             with open(audio_file_path, 'wb') as audio_file:
-#                 print(4)
-#                 for chunk in audio_data.chunks():
-#                     audio_file.write(chunk)
-#             print(4)
-
-#             return HttpResponse(status=204)  # No content response (HTTP 204)
-#         except Exception as e:
-#             return HttpResponse(status=500)  # Internal Server Error response (HTTP 500)
-
-#     return HttpResponse(status=405)  # Method Not Allowed response (HTTP 405)
-import os
-from django.http import JsonResponse
-
-import sys
 #the correct function
 @csrf_exempt
 def upload_audio(request):
@@ -226,11 +145,6 @@ def upload_audio(request):
     else:
         return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
-from django.http import JsonResponse, HttpResponse
-from django.http import FileResponse
-import io
-from django.http import HttpResponse, JsonResponse
-import logging
 
 @csrf_exempt
 def play_latest_audio(request):
@@ -264,12 +178,8 @@ def play_latest_audio(request):
     return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 
-
 def play_latest_audio_page(request):
     return render(request, 'testing.html')
-
-
-from django.http import HttpResponse, JsonResponse
 
 
 @csrf_exempt
@@ -299,18 +209,6 @@ def get_audio_data(request):
             return JsonResponse({'error': 'No audio data found.'})
 
     return JsonResponse({'error': 'Invalid request method.'})
-
-
-
-
-
-
-
-
-
-
-
-
 
 import pyaudio
 import wave
