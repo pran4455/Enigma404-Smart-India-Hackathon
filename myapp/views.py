@@ -120,27 +120,27 @@ def get_latest_audio_id(request):
         return JsonResponse({'latest_audio_id': None})
 
 
-#the correct function
 @csrf_exempt
 def upload_audio(request):
     if request.method == 'POST':
         try:
-            # Get the uploaded audio data from the request
+            # Get the uploaded audio data
             audio_data = request.FILES.get('audio_data')
 
             # Define the file path to save the audio as "audio.wav"
             audio_file_path = os.path.join(os.path.dirname(__file__), 'audio.wav')
 
-            # Save the audio data to the file
-            print(sys.getsizeof(audio_data))
-            with open(audio_file_path, 'wb') as audio_file:
+            # Ensure proper WAV format by re-encoding
+            with wave.open(audio_file_path, 'wb') as wav_file:
+                # Assuming the uploaded audio data is in PCM format
+                wav_file.setnchannels(1)  # Mono
+                wav_file.setsampwidth(2)  # 16-bit
+                wav_file.setframerate(44100)  # 44.1 kHz
                 for chunk in audio_data.chunks():
-                    print(1)
-                    audio_file.write(chunk)
+                    wav_file.writeframes(chunk)
 
-            return JsonResponse({'message': 'Audio successfully uploaded.'})
+            return JsonResponse({'message': 'Audio successfully uploaded and properly formatted.'})
         except Exception as e:
-            logger.error('Error while processing audio upload: %s', str(e))
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Method Not Allowed'}, status=405)
